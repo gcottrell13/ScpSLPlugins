@@ -2,12 +2,7 @@
 using Exiled.API.Features.Pickups;
 using InventorySystem.Items.Usables.Scp330;
 using SCPRandomCoin.API;
-using SCPRandomCoin.Configs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SCPRandomCoin.CoinEffects;
 
@@ -43,5 +38,14 @@ public class GetCandy : BaseCoinEffect, ICoinEffectDefinition
         CandyKindID.Yellow,
         CandyKindID.Yellow,
         CandyKindID.Pink,
+        CandyKindID.Black,
+        CandyKindID.Black,
+        CandyKindID.Gray,
+        CandyKindID.Gray,
+        CandyKindID.Orange,
+        CandyKindID.Orange,
+        CandyKindID.White,
+        CandyKindID.White,
+        CandyKindID.Evil,
     };
 }
