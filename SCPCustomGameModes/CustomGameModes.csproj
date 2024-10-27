@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SCPRandomCoin\SCPRandomCoin.csproj" />
     <ProjectReference Include="..\SCPStore\SCPStore.csproj" />
+    <ProjectReference Include="..\VoiceChatModifyHook\VoiceChatModifyHook.csproj" />
   </ItemGroup>
 
   <ItemGroup>

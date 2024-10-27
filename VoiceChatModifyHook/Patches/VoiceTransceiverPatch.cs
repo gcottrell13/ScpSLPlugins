@@ -1,5 +1,4 @@
-﻿using CustomGameModes.API;
-using HarmonyLib;
+﻿using HarmonyLib;
 using NorthwoodLib.Pools;
 using PlayerRoles.Voice;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Reflection.Emit;
 using VoiceChat.Networking;
 using static HarmonyLib.AccessTools;
 
-namespace CustomGameModes.Patches;
+namespace VoiceChatModifyHook.Patches;
 
 [HarmonyPatch(typeof(VoiceTransceiver), nameof(VoiceTransceiver.ServerReceiveMessage))]
 internal class VoiceTransceiverPatch
@@ -26,7 +25,7 @@ internal class VoiceTransceiverPatch
         {
             new(OpCodes.Ldarg_1),
             new(OpCodes.Ldfld, Field(typeof(VoiceMessage), nameof(VoiceMessage.Speaker))),
-            new(OpCodes.Ldloc_3),
+            new(OpCodes.Ldloc_S, 6),
             CodeInstruction.Call(typeof(ModifyVoiceChat), nameof(ModifyVoiceChat.SCPChat)),
         };
         newInstructions.InsertRange(index, collection);

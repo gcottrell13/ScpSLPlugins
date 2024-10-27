@@ -28,6 +28,9 @@ using SCPStore.API;
 using SCPStore;
 using PluginAPI.Roles;
 using Exiled.API.Features.Roles;
+using VoiceChatModifyHook;
+using VoiceChat;
+using VoiceChatModifyHook.Events;
 
 namespace CustomGameModes.GameModes;
 
@@ -150,6 +153,8 @@ internal class TroubleInLC : IGameMode
         PlayerEvent.UsedItem += OnUseItem;
         PlayerEvent.UsingItem += OnUsingItem;
 
+        ModifyVoiceChat.OnVoiceChatListen += OnVoiceChatListen;
+
         Scp914Event.UpgradingPlayer += OnUpgradingPlayer;
 
         ServerEvent.RespawningTeam += DeniableEvent;
@@ -174,6 +179,8 @@ internal class TroubleInLC : IGameMode
         PlayerEvent.TogglingNoClip -= OnToggleNoclip;
         PlayerEvent.UsedItem -= OnUseItem;
         PlayerEvent.UsingItem -= OnUsingItem;
+
+        ModifyVoiceChat.OnVoiceChatListen -= OnVoiceChatListen;
 
         Scp914Event.UpgradingPlayer -= OnUpgradingPlayer;
 
@@ -415,6 +422,26 @@ internal class TroubleInLC : IGameMode
     public void AddCredits(Player player, int amount) => bank.AddCredits(player, StoreCurrency, amount);
 
     public int GetCredits(Player player) => bank.GetCredits(player, StoreCurrency);
+
+    private void OnVoiceChatListen(VoiceChatListenEvent ev)
+    {
+        var speaker = ev.Speaker;
+        var listener = ev.Listener;
+        var channel = ev.VoiceChatChannel;
+        if (speaker == listener)
+            return;
+        if (channel == VoiceChatChannel.Mimicry)
+            return;
+
+        if (traitors.Contains(listener) && !speaker.IsAlive)
+        {
+            ev.VoiceChatChannel = VoiceChatChannel.RoundSummary;
+        }
+        else if (traitors.Contains(speaker) && !listener.IsAlive)
+        {
+            ev.VoiceChatChannel = VoiceChatChannel.RoundSummary;
+        }
+    }
 
     public void OnElevator(InteractingElevatorEventArgs ev)
     {

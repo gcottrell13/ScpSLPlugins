@@ -21,6 +21,9 @@ using Scp914;
 using PlayerRoles;
 using Exiled.API.Features.Items;
 using CustomGameModes.Configs;
+using VoiceChatModifyHook;
+using VoiceChatModifyHook.Events;
+using VoiceChat;
 
 namespace CustomGameModes.GameModes
 {
@@ -70,6 +73,8 @@ namespace CustomGameModes.GameModes
 
             Scp914Handler.UpgradingPickup += UpgradePickup;
             Scp914Handler.UpgradingInventoryItem += UpgradeInventory;
+
+            ModifyVoiceChat.OnVoiceChatListen += OnVoiceChatListen;
             // -------------------------------------------------------------
             // -------------------------------------------------------------
 
@@ -107,6 +112,8 @@ namespace CustomGameModes.GameModes
 
             Scp914Handler.UpgradingPickup -= UpgradePickup;
             Scp914Handler.UpgradingInventoryItem -= UpgradeInventory;
+
+            ModifyVoiceChat.OnVoiceChatListen -= OnVoiceChatListen;
             // -------------------------------------------------------------
             // -------------------------------------------------------------
 
@@ -135,11 +142,31 @@ namespace CustomGameModes.GameModes
 
         #region Event Handlers
 
+        private void OnVoiceChatListen(VoiceChatListenEvent ev)
+        {
+            var speaker = ev.Speaker;
+            var listener = ev.Listener;
+            var channel = ev.VoiceChatChannel;
+            if (speaker == listener)
+                return;
+            if (channel == VoiceChatChannel.Mimicry)
+                return;
+
+            if (listener.IsScp && !speaker.IsAlive)
+            {
+                ev.VoiceChatChannel = VoiceChatChannel.RoundSummary;
+            }
+            else if (speaker.IsScp && !listener.IsAlive)
+            {
+                ev.VoiceChatChannel = VoiceChatChannel.Spectator;
+            }
+        }
+
         private void Spawned(SpawnedEventArgs ev)
         {
             if (Manager == null)
                 return;
-            if (Manager.PlayerRoles.ContainsKey(ev.Player))
+            if (Manager.PlayerRoles.TryGetValue(ev.Player, out var role) && role is not SpectatorRole)
                 return;
             if (Round.ElapsedTime > TimeSpan.FromSeconds(1))
                 Manager.ApplyNextRole(ev.Player);
@@ -226,11 +253,11 @@ namespace CustomGameModes.GameModes
                 }
                 else
                 {
-                    if (DoorsReopenAfterClosing.Contains(ev.Door) && !ev.Door.IsOpen)
+                    if (DoorsReopenAfterClosing.Contains(ev.Door))
                     {
-                        Timing.CallDelayed(2f, () =>
+                        Timing.CallDelayed(5f, () =>
                         {
-                            ev.Door.IsOpen = false;
+                            ev.Door.IsOpen = true;
                         });
                     }
                 }
@@ -335,7 +362,6 @@ namespace CustomGameModes.GameModes
         {
             Log.Debug("DHAS - Starting a new game");
             gamesPlayed++;
-            List<Player> players = Player.List.ToList();
             Manager = new DhasRoleManager();
 
             // ----------------------------------------------------------------------------------------------------------------
@@ -384,6 +410,15 @@ namespace CustomGameModes.GameModes
             #region Set up Players
             Log.Debug("DHAS - set up players");
 
+            List<Player> players = Player.List.ToList();
+            players.ShuffleListSecure();
+
+            // make sure any computers aren't left alone causing the overcharge animation to trigger
+            foreach (var scp079 in players.Where(x => x.Role == RoleTypeId.Scp079)) 
+                scp079.Role.Set(RoleTypeId.Scientist);
+
+            Round.IsLocked = true;
+
             var iterator = 0;
             while (iterator < players.Count)
             {
@@ -392,6 +427,8 @@ namespace CustomGameModes.GameModes
                 Manager.ApplyNextRole(player);
                 iterator++;
             }
+
+            Round.IsLocked = false;
 
             #endregion
             // ----------------------------------------------------------------------------------------------------------------

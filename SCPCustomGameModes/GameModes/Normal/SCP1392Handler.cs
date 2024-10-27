@@ -7,8 +7,6 @@ using Exiled.Events.EventArgs.Player;
 using Exiled.API.Extensions;
 using Exiled.API.Enums;
 using System;
-using Exiled.Events.EventArgs.Interfaces;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Linq;
 
 namespace CustomGameModes.GameModes.Normal

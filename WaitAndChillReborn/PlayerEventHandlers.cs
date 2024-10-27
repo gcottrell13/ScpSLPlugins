@@ -13,7 +13,6 @@
     using MEC;
     using PlayerRoles;
     using static API.API;
-    using Log = Exiled.API.Features.Log;
 
     internal static class PlayerEventHandlers
     {
@@ -48,6 +47,8 @@
                 return;
             if (!Config.UseReadyCheck)
                 return;
+            if (ev.Player.Role.IsDead)
+                return;
 
             if (ReadyPlayers.Contains(ev.Player))
             {
@@ -59,11 +60,6 @@
                 ReadyPlayers.Add(ev.Player);
                 ensureReadyInName(ev.Player);
             }
-        }
-
-        public static void OnPlayerLeft(LeftEventArgs ev)
-        {
-            ReadyPlayers.Remove(ev.Player);
         }
 
         public static void OnSpawnRagdoll(SpawningRagdollEventArgs ev)

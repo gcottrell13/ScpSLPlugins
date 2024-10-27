@@ -75,7 +75,7 @@ public class EffectHandler
 
         if (effectName == null)
         {
-            Log.Warn($"Player '{player.DisplayNickname}' got heads, but no coin effect was chosen");
+            Log.Debug($"Player '{player.DisplayNickname}' got heads, but no coin effect was chosen");
             return;
         }
 

@@ -14,6 +14,12 @@
 
             foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List)
             {
+                if (player.Role == RoleTypeId.Scp079)
+                    player.Role.Set(RoleTypeId.Spectator);
+            }
+
+            foreach (Exiled.API.Features.Player player in Exiled.API.Features.Player.List)
+            {
                 if (player.IsAlive)
                 {
                     player.ClearInventory();

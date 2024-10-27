@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WaitAndChillReborn", "WaitA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SCPRandomCoin", "SCPRandomCoin\SCPRandomCoin.csproj", "{5FF2F5C4-5379-4233-9D32-0228573988F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VoiceChatModifyHook", "VoiceChatModifyHook\VoiceChatModifyHook.csproj", "{828B40D0-822D-486C-BB8E-210F09554FBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{5FF2F5C4-5379-4233-9D32-0228573988F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5FF2F5C4-5379-4233-9D32-0228573988F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5FF2F5C4-5379-4233-9D32-0228573988F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{828B40D0-822D-486C-BB8E-210F09554FBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{828B40D0-822D-486C-BB8E-210F09554FBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{828B40D0-822D-486C-BB8E-210F09554FBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{828B40D0-822D-486C-BB8E-210F09554FBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
