@@ -1,12 +1,7 @@
-﻿using Exiled.API.Enums;
+using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using SCPRandomCoin.API;
-using SCPRandomCoin.Configs;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SCPRandomCoin.CoinEffects;
 

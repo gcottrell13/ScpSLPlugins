@@ -507,7 +507,7 @@ namespace CustomGameModes.GameModes
 
             Log.Debug("DHAS - starting main timer");
             Manager.BeastReleased = true;
-            timerTotalSeconds = BaseRoundTime + Manager.TotalTimeRemovedByTasks();
+            timerTotalSeconds = BaseRoundTime + Manager.TotalTimeRemovedByTasks() / 5;
             timerStartedTime = DateTime.Now;
             getBroadcast = (p) => p.MainGameBroadcast;
 
