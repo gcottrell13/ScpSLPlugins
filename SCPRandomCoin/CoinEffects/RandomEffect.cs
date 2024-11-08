@@ -1,4 +1,4 @@
-using Exiled.API.Enums;
+﻿using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using SCPRandomCoin.API;
 using System.Collections.Generic;
@@ -28,5 +28,8 @@ public class RandomEffect : BaseCoinEffect, ICoinEffectDefinition
         { EffectType.Invisible, 999 },
         { EffectType.Scp207, 60 },
         { EffectType.Vitality, 60 },
+
+        { EffectType.OrangeCandy, 10 },
+        { EffectType.SoundtrackMute, 120 },
     };
 }
