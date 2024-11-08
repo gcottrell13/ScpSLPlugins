@@ -260,7 +260,8 @@ internal class SCP5000Handler
         LastNoisyAction = DateTime.Now;
     }
 
-    IEnumerable<Player> allPlayersThatCanBeAffected() => Player.Get(x => x != Scp5000Owner && x.Role != RoleTypeId.Spectator && x.Role != RoleTypeId.Scp079 && x.Role != RoleTypeId.Overwatch);
+    IEnumerable<Player> allPlayersThatCanBeAffected() => Player.Get(canPlayerBeAffected);
+    bool canPlayerBeAffected(Player x) => x != Scp5000Owner && x.Role != RoleTypeId.Spectator && x.Role != RoleTypeId.Scp079 && x.Role != RoleTypeId.Overwatch;
 
     void ShouldAdd096Target(AddingTargetEventArgs ev)
     {
@@ -274,7 +275,7 @@ internal class SCP5000Handler
     public void SetupScp5000()
     {
         Instances.Add(this);
-        foreach (var player in allPlayersThatCanBeAffected())
+        foreach (var player in Player.List)
         {
             VisibleTo[player] = (int)(-5 / TickRateSeconds);
         }
@@ -296,35 +297,53 @@ internal class SCP5000Handler
 
     private IEnumerator<float> scp5000Loop()
     {
+        var requirement = Round.ElapsedTime.Minutes / 5 + 1;
         while (Scp5000Owner != null && Scp5000Owner.IsConnected && Scp5000Owner.Role.Type == Scp5000OwnerRole)
         {
-            if (!WasRecentlyNoisy)
+            yield return Timing.WaitForSeconds(TickRateSeconds);
+            if (WasRecentlyNoisy)
+                continue;
+
+            foreach (var player in Player.List)
             {
-                // Scp5000Owner.EnableEffect(Exiled.API.Enums.EffectType.Invisible, 2f);
-                foreach (var kvp in VisibleTo.ToList())
+                if (!canPlayerBeAffected(player))
                 {
-                    var player = kvp.Key;
-                    var ticksNotSeen = kvp.Value;
-                    if (player.GetVisionInformation(Scp5000Owner).IsLooking == false)
-                    {
-                        ticksNotSeen++;
-                        VisibleTo[player] = ticksNotSeen;
-                    }
-                    else
+                    if (!VisibleTo.ContainsKey(player))
                     {
                         VisibleTo[player] = 0;
+                        Scp5000Owner.ChangeAppearance(Scp5000Owner.Role, new[] { player }, true);
                     }
+                    continue;
+                }
 
-                    if (ticksNotSeen >= Round.ElapsedTime.Minutes / 5 + 1)
-                    {
-                        Scp5000Owner.ChangeAppearance(RoleTypeId.Spectator, new[] { player }, true);
-                        VisibleTo.Remove(player);
-                        Log.Debug($"{Scp5000Owner.DisplayNickname} - now invisible to {player.DisplayNickname}");
-                    }
+                if (!VisibleTo.TryGetValue(player, out var ticksNotSeen))
+                {
+                    // Scp5000Owner.ChangeAppearance(RoleTypeId.Spectator, new[] { player }, true);
+                    continue;
+                }
+
+                if (player.GetVisionInformation(Scp5000Owner).IsLooking)
+                {
+                    ticksNotSeen = 0;
+                }
+                else
+                {
+                    ticksNotSeen++;
+                }
+                VisibleTo[player] = ticksNotSeen;
+                if (ticksNotSeen >= requirement)
+                {
+                    Scp5000Owner.ChangeAppearance(RoleTypeId.Spectator, new[] { player }, true);
+                    VisibleTo.Remove(player);
+                    Log.Debug($"{Scp5000Owner.DisplayNickname} - now invisible to {player.DisplayNickname}");
                 }
             }
 
-            yield return Timing.WaitForSeconds(TickRateSeconds);
+        }
+
+        if (Scp5000Owner != null && !Scp5000Owner.IsDead)
+        {
+            Scp5000Owner.ChangeAppearance(Scp5000Owner.Role);
         }
 
         UnsubscribeEventHandlers();
