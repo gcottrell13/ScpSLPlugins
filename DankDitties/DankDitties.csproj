@@ -1,20 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+	  <TargetFramework>net481</TargetFramework>
     <LangVersion>11</LangVersion>
     <nullable>enable</nullable>
-    <BaseOutputPath>$(EXILED_REFERENCES)</BaseOutputPath>
-    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	  <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+	  <GenerateDocumentationFile>False</GenerateDocumentationFile>
+	  <BaseOutputPath>$(EXILED_REFERENCES)</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ExMod.Exiled" Version="8.14.0" />
     <PackageReference Include="Lib.Harmony" Version="2.2.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SCPStore\SCPStore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,9 +31,18 @@
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>$(EXILED_REFERENCES)\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestModule">
-      <HintPath>$(EXILED_REFERENCES)\UnityEngine.UnityWebRequestModule.dll</HintPath>
-    </Reference>
+	  <Reference Include="UnityEngine.UnityWebRequestModule">
+		  <HintPath>$(EXILED_REFERENCES)\UnityEngine.UnityWebRequestModule.dll</HintPath>
+	  </Reference>
+	  <Reference Include="AudioPlayer">
+		  <HintPath>$(EXILED_REFERENCES)\AudioPlayer.dll</HintPath>
+	  </Reference>
+	  <Reference Include="SCPSLAudioApi">
+		  <HintPath>$(EXILED_REFERENCES)\dependencies\SCPSLAudioApi.dll</HintPath>
+	  </Reference>
+	  <Reference Include="NVorbis">
+		  <HintPath>$(EXILED_REFERENCES)\dependencies\NVorbis.dll</HintPath>
+	  </Reference>
   </ItemGroup>
 
 </Project>
