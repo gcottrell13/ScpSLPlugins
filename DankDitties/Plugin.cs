@@ -6,6 +6,7 @@ using Exiled.API.Features;
 using Configs;
 using PlayerEvent = Exiled.Events.Handlers.Player;
 using ServerEvent = Exiled.Events.Handlers.Server;
+using SCPSLAudioApi.AudioCore;
 
 internal class DankDittiesPlugin : Plugin<Config, Translation>
 {
@@ -16,6 +17,9 @@ internal class DankDittiesPlugin : Plugin<Config, Translation>
         Singleton = this;
 
         ServerEvent.RoundStarted += EventHandlers.OnRoundStart;
+        PlayerEvent.Died += EventHandlers.OnDied;
+        PlayerEvent.Spawned += EventHandlers.OnSpawn;
+        AudioPlayerBase.OnFinishedTrack += EventHandlers.OnFinishedTrack;
 
         base.OnEnabled();
     }
@@ -25,6 +29,9 @@ internal class DankDittiesPlugin : Plugin<Config, Translation>
         Singleton = null;
 
         ServerEvent.RoundStarted -= EventHandlers.OnRoundStart;
+        PlayerEvent.Died -= EventHandlers.OnDied;
+        PlayerEvent.Spawned -= EventHandlers.OnSpawn;
+        AudioPlayerBase.OnFinishedTrack -= EventHandlers.OnFinishedTrack;
 
         base.OnDisabled();
     }

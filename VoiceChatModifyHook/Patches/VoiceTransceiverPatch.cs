@@ -25,7 +25,7 @@ internal class VoiceTransceiverPatch
         {
             new(OpCodes.Ldarg_1),
             new(OpCodes.Ldfld, Field(typeof(VoiceMessage), nameof(VoiceMessage.Speaker))),
-            new(OpCodes.Ldloc_S, 6),
+            new(OpCodes.Ldloc_3),
             CodeInstruction.Call(typeof(ModifyVoiceChat), nameof(ModifyVoiceChat.SCPChat)),
         };
         newInstructions.InsertRange(index, collection);
