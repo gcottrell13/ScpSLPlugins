@@ -43,7 +43,7 @@ namespace CustomGameModes
 
         public override string Name => "CustomGameModes";
         public override string Author => "GCOTTRE";
-        public override Version Version => new Version(1, 0, 4);
-        public override Version RequiredExiledVersion => new Version(8, 13, 1);
+        public override Version Version => new Version(1, 0, 5);
+        public override Version RequiredExiledVersion => new Version(9, 0, 0);
     }
 }

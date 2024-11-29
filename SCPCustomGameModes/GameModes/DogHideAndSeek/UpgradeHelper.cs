@@ -17,7 +17,7 @@ namespace CustomGameModes.GameModes
 {
     public static class UpgradeHelper
     {
-        public static bool Upgrade(UpgradingInventoryItemEventArgs ev, out Item newItem)
+        public static bool Upgrade(UpgradingInventoryItemEventArgs ev, out Item? newItem)
         {
             newItem = null;
 
@@ -32,15 +32,15 @@ namespace CustomGameModes.GameModes
 
             if (InventoryItemLoader.AvailableItems.TryGetValue(ev.Item.Type, out var value) && value.TryGetComponent<Scp914ItemProcessor>(out var processor))
             {
-                var newItemBase = processor.OnInventoryItemUpgraded(ev.KnobSetting, ev.Player.ReferenceHub, ev.Item.Serial);
+                var newItemBase = processor.UpgradeInventoryItem(ev.KnobSetting, ev.Item.Base);
 
-                if (newItemBase == null)
+                if (newItemBase.ResultingItems.Length == 0)
                 {
                     newItem = ev.Item;
                     return true;
                 }
 
-                newItem = Item.Get(newItemBase);
+                newItem = Item.Get(newItemBase.ResultingItems[0]);
                 return true;
             }
 
@@ -62,15 +62,15 @@ namespace CustomGameModes.GameModes
 
             if (InventoryItemLoader.AvailableItems.TryGetValue(ev.Pickup.Type, out var value) && value.TryGetComponent<Scp914ItemProcessor>(out var processor))
             {
-                var newPickupBase = processor.OnPickupUpgraded(ev.KnobSetting, ev.Pickup.Base, ev.OutputPosition);
+                var newPickupBase = processor.UpgradePickup(ev.KnobSetting, ev.Pickup.Base);
 
-                if (newPickupBase == null)
+                if (newPickupBase.ResultingPickups.Length == 0)
                 {
                     newPickup = ev.Pickup;
                     return true;
                 }
 
-                newPickup = Pickup.Get(newPickupBase);
+                newPickup = Pickup.Get(newPickupBase.ResultingPickups[0]);
                 return true;
             }
 

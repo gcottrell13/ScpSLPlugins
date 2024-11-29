@@ -49,7 +49,6 @@ public class WaitAndChillReborn : Plugin<Config, Translation>
 
         MapEvent.AnnouncingScpTermination += OnDeniableEvent;
         MapEvent.ChangingIntoGrenade += OnDeniableEvent;
-        MapEvent.PlacingBlood += OnDeniableEvent;
 
         PlayerEvent.SpawningRagdoll += PlayerEventHandlers.OnSpawnRagdoll;
         PlayerEvent.IntercomSpeaking += OnDeniableEvent;
@@ -78,7 +77,6 @@ public class WaitAndChillReborn : Plugin<Config, Translation>
 
         MapEvent.AnnouncingScpTermination -= OnDeniableEvent;
         MapEvent.ChangingIntoGrenade -= OnDeniableEvent;
-        MapEvent.PlacingBlood -= OnDeniableEvent;
 
         PlayerEvent.SpawningRagdoll -= PlayerEventHandlers.OnSpawnRagdoll;
         PlayerEvent.IntercomSpeaking -= OnDeniableEvent;
@@ -103,6 +101,6 @@ public class WaitAndChillReborn : Plugin<Config, Translation>
 
     public override string Name => "WaitAndChillReborn";
     public override string Author => "GCOTTRE";
-    public override Version Version => new Version(1, 0, 1);
-    public override Version RequiredExiledVersion => new Version(8, 13, 1);
+    public override Version Version => new Version(1, 0, 2);
+    public override Version RequiredExiledVersion => new Version(9, 0, 0);
 }
