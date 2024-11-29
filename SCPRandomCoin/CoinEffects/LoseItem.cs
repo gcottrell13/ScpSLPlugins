@@ -12,7 +12,7 @@ namespace SCPRandomCoin.CoinEffects;
 [RandomCoinEffect(nameof(LoseItem))]
 public class LoseItem : BaseCoinEffect, ICoinEffectDefinition
 {
-    public bool CanHaveEffect(PlayerInfoCache playerInfoCache) => playerInfoCache.Player.Items.Count > 0;
+    public bool CanHaveEffect(PlayerInfoCache playerInfoCache) => !playerInfoCache.Player.IsScp && playerInfoCache.Player.Items.Count > 0;
 
     public void DoEffect(PlayerInfoCache playerInfoCache, List<string> hintLines)
     {
