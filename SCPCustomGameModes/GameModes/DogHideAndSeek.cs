@@ -65,7 +65,7 @@ namespace CustomGameModes.GameModes
             PlayerEvent.SearchingPickup += OnSearchingPickup;
             PlayerEvent.DroppingAmmo += DeniableEvent;
             PlayerEvent.InteractingElevator += DeniableEvent;
-            PlayerEvent.PlayerDamageWindow += PlayerDamagingWindow;
+            PlayerEvent.DamagingWindow += PlayerDamagingWindow;
             PlayerEvent.Spawned += Spawned;
 
             ServerEvent.EndingRound += OnEndingRound;
@@ -104,7 +104,7 @@ namespace CustomGameModes.GameModes
             PlayerEvent.SearchingPickup -= OnSearchingPickup;
             PlayerEvent.DroppingAmmo -= DeniableEvent;
             PlayerEvent.InteractingElevator -= DeniableEvent;
-            PlayerEvent.PlayerDamageWindow -= PlayerDamagingWindow;
+            PlayerEvent.DamagingWindow -= PlayerDamagingWindow;
             PlayerEvent.Spawned -= Spawned;
 
             ServerEvent.EndingRound -= OnEndingRound;

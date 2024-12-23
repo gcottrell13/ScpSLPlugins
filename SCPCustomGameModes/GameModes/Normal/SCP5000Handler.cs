@@ -74,8 +74,8 @@ internal class SCP5000Handler
 
     public void UnsubscribeEventHandlers()
     {
-        PlayerEvent.UsingMicroHIDEnergy -= IsNoisy;
-        PlayerEvent.ChangingMicroHIDState -= IsNoisy;
+        PlayerEvent.UsingMicroHIDEnergy -= NoisyItem;
+        PlayerEvent.ChangingMicroHIDState -= NoisyItem;
         PlayerEvent.InteractingDoor -= IsNoisy;
         PlayerEvent.InteractingElevator -= IsNoisy;
         PlayerEvent.VoiceChatting -= IsNoisy;
@@ -183,8 +183,8 @@ internal class SCP5000Handler
                 }
             default:
                 {
-                    PlayerEvent.UsingMicroHIDEnergy += IsNoisy;
-                    PlayerEvent.ChangingMicroHIDState += IsNoisy;
+                    PlayerEvent.UsingMicroHIDEnergy += NoisyItem;
+                    PlayerEvent.ChangingMicroHIDState += NoisyItem;
                     PlayerEvent.VoiceChatting += IsNoisy;
                     PlayerEvent.Shooting += IsNoisy;
                     break;
@@ -222,6 +222,12 @@ internal class SCP5000Handler
     void IsNoisy(IPlayerEvent ev)
     {
         if (ev.Player != Scp5000Owner) return;
+        noisy();
+    }
+
+    void NoisyItem(IItemEvent ev)
+    {
+        if (ev.Item.Owner != Scp5000Owner) return;
         noisy();
     }
 
@@ -277,6 +283,7 @@ internal class SCP5000Handler
         Instances.Add(this);
         foreach (var player in Player.List)
         {
+            if (player == Scp5000Owner) continue;
             VisibleTo[player] = (int)(-5 / TickRateSeconds);
         }
 
