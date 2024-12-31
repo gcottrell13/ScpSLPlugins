@@ -1,14 +1,13 @@
-﻿namespace WaitAndChillReborn
+﻿namespace WaitAndChillReborn.LobbyRooms;
+
+using UnityEngine;
+
+public class TowerRoom : BaseLobbyRoom
 {
-    using UnityEngine;
+    public const string Name = "TOWER1";
 
-    public class TowerRoom : BaseLobbyRoom
+    public override void SetupSpawnPoints()
     {
-        public const string Name = "TOWER1";
-
-        public override void SetupSpawnPoints()
-        {
-            SpawnPoints.Add(new Vector3(39.150f, 1014.112f, -31.818f));
-        }
+        SpawnPoints.Add(new Vector3(39.150f, 1014.112f, -31.818f));
     }
 }

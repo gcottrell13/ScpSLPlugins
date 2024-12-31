@@ -4,6 +4,7 @@
     using Exiled.API.Features.Doors;
     using Exiled.API.Features.Pickups;
     using global::WaitAndChillReborn.Configs;
+    using global::WaitAndChillReborn.LobbyRooms;
     using MEC;
     using PlayerRoles;
     using System.Collections.Generic;

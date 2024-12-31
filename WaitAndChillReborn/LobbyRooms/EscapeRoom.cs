@@ -1,14 +1,13 @@
-﻿namespace WaitAndChillReborn
+﻿namespace WaitAndChillReborn.LobbyRooms;
+
+using UnityEngine;
+
+public class EscapeRoom : BaseLobbyRoom
 {
-    using UnityEngine;
+    public const string Name = "ESCAPE";
 
-    public class EscapeRoom : BaseLobbyRoom
+    public override void SetupSpawnPoints()
     {
-        public const string Name = "ESCAPE";
-
-        public override void SetupSpawnPoints()
-        {
-            SpawnPoints.Add(new Vector3(123f, 988f, 26f));
-        }
+        SpawnPoints.Add(new Vector3(123f, 988f, 26f));
     }
 }

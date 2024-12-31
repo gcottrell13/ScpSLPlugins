@@ -1,40 +1,23 @@
-﻿namespace WaitAndChillReborn
+﻿namespace WaitAndChillReborn.LobbyRooms;
+
+using Exiled.API.Enums;
+using Exiled.API.Features;
+using System.Linq;
+using UnityEngine;
+
+internal class PC15Room : BaseLobbyRoom
 {
-    using Exiled.API.Enums;
-    using Exiled.API.Features;
-    using UnityEngine;
+    public const string Name = "PC15";
 
-    internal class PC15Room : BaseLobbyRoom
+    protected override RoomType RoomType => RoomType.LczCafe;
+
+    public static readonly Vector3[] LocalPoints = [
+        new Vector3(3, 1, 0),
+        new Vector3(7.5f, 1, -4.5f),
+    ];
+
+    public override void SetupSpawnPoints()
     {
-        public const string Name = "PC15";
-
-        private int sign = 1;
-
-        protected override RoomType RoomType => RoomType.LczCafe;
-
-        public override void SetupSpawnPoints()
-        {
-            Vector3 intoRoom = Entrance.Transform.forward * sign;
-            Vector3 right = Entrance.Transform.right;
-            SpawnPoints.Add(Entrance.Position + intoRoom * 15 + right * 4);
-            SpawnPoints.Add(Entrance.Position + intoRoom * 15 - right * 4);
-        }
-
-        public override void OnPlayerSpawn(Player player)
-        {
-            base.OnPlayerSpawn(player);
-
-            if (player?.CurrentRoom?.Type != RoomType)
-            {
-                // The door's forward direction does not always point into the room.
-                // This process appears seamless enough to the player, it shouldn't be jarring.
-                // It will only happen to one person, fixing it for everyone else.
-                sign = -1;
-                SpawnPoints.Clear();
-                SetupSpawnPoints();
-                Log.Debug("Flipping PC15 sign");
-                base.OnPlayerSpawn(player);
-            }
-        }
+        SpawnPoints.AddRange(LocalPoints.Select(ThisRoom.Transform.TransformPoint));
     }
 }

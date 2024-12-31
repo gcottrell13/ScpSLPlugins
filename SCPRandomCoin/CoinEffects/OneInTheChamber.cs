@@ -38,12 +38,12 @@ public class OneInTheChamber : BaseCoinEffect, ICoinEffectDefinition
                 ShotsHit++;
                 ShowHint();
                 yield return Timing.WaitForSeconds(0.5f);
-                Weapon.Ammo = 1;
+                Weapon.BarrelAmmo = 1;
             }
             else
             {
                 yield return Timing.WaitForSeconds(0.5f);
-                Weapon.Ammo = 1;
+                Weapon.BarrelAmmo = 1;
             }
         }
         public void OnHurting(HurtingEventArgs ev)
@@ -103,7 +103,7 @@ public class OneInTheChamber : BaseCoinEffect, ICoinEffectDefinition
         yield return Timing.WaitForSeconds(1);
 
         var weapon = (Firearm)player.AddItem(ItemType.GunRevolver);
-        weapon.Ammo = 1;
+        weapon.BarrelAmmo = 1;
         player.CurrentItem = weapon;
 
         var info = new PlayerRecord(player, weapon)

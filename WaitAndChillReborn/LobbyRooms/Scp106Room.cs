@@ -1,18 +1,17 @@
-﻿namespace WaitAndChillReborn
+﻿namespace WaitAndChillReborn.LobbyRooms;
+
+using Exiled.API.Enums;
+using Exiled.API.Extensions;
+using PlayerRoles;
+
+internal class Scp106Room : BaseLobbyRoom
 {
-    using Exiled.API.Enums;
-    using Exiled.API.Extensions;
-    using PlayerRoles;
+    public const string Name = "106";
 
-    internal class Scp106Room : BaseLobbyRoom
+    protected override RoomType RoomType => RoomType.Hcz106;
+
+    public override void SetupSpawnPoints()
     {
-        public const string Name = "106";
-
-        protected override RoomType RoomType => RoomType.Hcz106;
-
-        public override void SetupSpawnPoints()
-        {
-            SpawnPoints.Add(RoleTypeId.Scp106.GetRandomSpawnLocation().Position);
-        }
+        SpawnPoints.Add(RoleTypeId.Scp106.GetRandomSpawnLocation().Position);
     }
 }

@@ -54,7 +54,6 @@ namespace CustomGameModes.GameModes
             Scp079Event.Pinging -= Pinging;
 
             ServerEvent.RespawningTeam -= RespawningTeam;
-            ServerEvent.SelectingRespawnTeam -= SelectingRespawnTeam;
             SCPRandomCoin.API.CoinEffectRegistry.EnableAll();
         }
 
@@ -65,7 +64,6 @@ namespace CustomGameModes.GameModes
             Scp079Event.Pinging += Pinging;
 
             ServerEvent.RespawningTeam += RespawningTeam;
-            ServerEvent.SelectingRespawnTeam += SelectingRespawnTeam;
             DoSpawnQueue();
             GiveSCP5000ToHuman();
 
@@ -161,7 +159,8 @@ namespace CustomGameModes.GameModes
         {
             if (!DoomSlayers.Contains(ev.Player)) return;
 
-            ev.Firearm.Ammo = ev.Firearm.MaxAmmo;
+            ev.Firearm.BarrelAmmo = ev.Firearm.MaxBarrelAmmo;
+            ev.Firearm.MagazineAmmo = ev.Firearm.MaxMagazineAmmo;
         }
 
         private IEnumerator<float> RespawningTeam(RespawningTeamEventArgs ev)
@@ -169,13 +168,9 @@ namespace CustomGameModes.GameModes
             yield return Timing.WaitForSeconds(3);
             foreach (Player player in ev.Players)
             {
+                player.Role.Set(RoleTypeId.NtfCaptain);
                 new SCP5000Handler(player).SetupScp5000();
             }
-        }
-
-        private void SelectingRespawnTeam(SelectingRespawnTeamEventArgs ev)
-        {
-            ev.Team = Respawning.SpawnableTeamType.NineTailedFox;
         }
 
         private void Pinging(PingingEventArgs ev)

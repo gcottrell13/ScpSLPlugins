@@ -96,7 +96,8 @@ namespace CustomGameModes.GameModes
                     Timing.CallDelayed(10f + GhostLightCooldownPenalty, () =>
                     {
                         givingGhostlight = false;
-                        player.CurrentItem = player.AddItem(ItemType.SCP2176);
+                        if (!player.IsDead)
+                            player.CurrentItem = player.AddItem(ItemType.SCP2176);
                     });
                 }
             }
