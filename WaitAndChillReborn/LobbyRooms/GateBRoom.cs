@@ -1,16 +1,15 @@
-﻿namespace WaitAndChillReborn
+﻿namespace WaitAndChillReborn.LobbyRooms;
+
+using Exiled.API.Enums;
+
+internal class GateBRoom : BaseLobbyRoom
 {
-    using Exiled.API.Enums;
+    public const string Name = "GATE_B";
 
-    internal class GateBRoom : BaseLobbyRoom
+    protected override RoomType RoomType => RoomType.EzGateB;
+
+    public override void SetupSpawnPoints()
     {
-        public const string Name = "GATE_B";
-
-        protected override RoomType RoomType => RoomType.EzGateB;
-
-        public override void SetupSpawnPoints()
-        {
-            SpawnPoints.Add(Gate.Position - Gate.Transform.forward);
-        }
+        SpawnPoints.Add(Gate.Position - Gate.Transform.forward);
     }
 }

@@ -269,7 +269,6 @@ namespace CustomGameModes.GameModes
         {
             if (Manager == null)
                 return;
-            // allow the Class-D to hurt/kill the beast after they win
             // disallow the beast to hurt the Class-D after it loses
 
             if (ev.Player == ev.Attacker)
@@ -280,6 +279,9 @@ namespace CustomGameModes.GameModes
 
             if (DidTimeRunOut && ev.Attacker?.Role.Team == Team.SCPs)
                 DeniableEvent(ev);
+
+            if (!DidTimeRunOut && ev.IsAllowed && ev.Player.IsHuman)
+                Manager.OnRemoveTime(2);
         }
 
         private void UpgradeInventory(UpgradingInventoryItemEventArgs ev)
@@ -287,7 +289,7 @@ namespace CustomGameModes.GameModes
             if (Manager == null)
                 return;
 
-            if (UpgradeHelper.Upgrade(ev, out Item newItem))
+            if (UpgradeHelper.Upgrade(ev, out Item? newItem) && newItem != null)
             {
                 DeniableEvent(ev);
                 if (ev.Item != newItem)

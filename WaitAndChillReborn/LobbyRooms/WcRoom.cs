@@ -1,19 +1,18 @@
-﻿namespace WaitAndChillReborn
+﻿namespace WaitAndChillReborn.LobbyRooms;
+
+using Exiled.API.Enums;
+using Exiled.API.Features.Doors;
+using System.Linq;
+
+internal class WcRoom : BaseLobbyRoom
 {
-    using Exiled.API.Enums;
-    using Exiled.API.Features.Doors;
-    using System.Linq;
+    public const string Name = "WC";
 
-    internal class WcRoom : BaseLobbyRoom
+    protected override RoomType RoomType => RoomType.LczToilets;
+
+    public override void SetupSpawnPoints()
     {
-        public const string Name = "WC";
-
-        protected override RoomType RoomType => RoomType.LczToilets;
-
-        public override void SetupSpawnPoints()
-        {
-            Door door = ThisRoom.Doors.First(door => door.Rooms.Count == 1);
-            SpawnPoints.Add(door.Position + door.Transform.forward);
-        }
+        Door door = ThisRoom.Doors.First(door => door.Rooms.Count == 1);
+        SpawnPoints.Add(door.Position + door.Transform.forward);
     }
 }

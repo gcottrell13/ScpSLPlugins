@@ -1,18 +1,13 @@
 ﻿using Exiled.API.Enums;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
-using Exiled.API.Features.Doors;
 using Exiled.API.Features.Items;
 using Exiled.API.Features.Pickups;
 using Exiled.Events.EventArgs.Player;
-using Interactables.Interobjects;
 using MEC;
 using PlayerRoles;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PlayerEvent = Exiled.Events.Handlers.Player;
 
 namespace CustomGameModes.GameModes
@@ -44,7 +39,7 @@ namespace CustomGameModes.GameModes
         }
 
 
-        Pickup myCard;
+        Pickup? myCard;
 
         [CrewmateTask(TaskDifficulty.Easy)]
         private IEnumerator<float> GetAKeycard()
@@ -59,7 +54,7 @@ namespace CustomGameModes.GameModes
                 FormatTask("Pick up a Keycard", compass);
                 yield return Timing.WaitForSeconds(0.5f);
             }
-            MyKeycardType = myCard.Type;
+            MyKeycardType = myCard?.Type ?? 0;
         }
 
         [CrewmateTask(TaskDifficulty.Medium)]

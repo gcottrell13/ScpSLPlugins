@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFramework>net481</TargetFramework>
-	  <LangVersion>11</LangVersion>
+	  <LangVersion>12</LangVersion>
     <nullable>enable</nullable>
     <BaseOutputPath>$(EXILED_REFERENCES)</BaseOutputPath>
     <ProduceReferenceAssembly>True</ProduceReferenceAssembly>

@@ -7,6 +7,7 @@ namespace WaitAndChillReborn
     using UnityEngine;
     using MEC;
     using static API.API;
+    using global::WaitAndChillReborn.LobbyRooms;
 
     internal static class Methods
     {
@@ -99,6 +100,9 @@ namespace WaitAndChillReborn
             if (Config.LobbyRoom.Contains(EscapeRoom.Name)) LobbyAvailableRooms.Add(new EscapeRoom());
             if (Config.LobbyRoom.Contains(PC15Room.Name)) LobbyAvailableRooms.Add(new PC15Room());
             if (Config.LobbyRoom.Contains(OutsideRoom.Name)) LobbyAvailableRooms.Add(new OutsideRoom());
+            if (Config.LobbyRoom.Contains(CapybaraRoom.Name)) LobbyAvailableRooms.Add(new CapybaraRoom());
+            if (Config.LobbyRoom.Contains(Update14WhiteboardRoom.Name)) LobbyAvailableRooms.Add(new Update14WhiteboardRoom());
+            if (Config.LobbyRoom.Contains(HczMicroHidRoom.Name)) LobbyAvailableRooms.Add(new HczMicroHidRoom());
 
             if (Config.StaticLobbyPositions.Any(p => p != -Vector3.one)) LobbyAvailableRooms.Add(new StaticSpawnRoom());
 

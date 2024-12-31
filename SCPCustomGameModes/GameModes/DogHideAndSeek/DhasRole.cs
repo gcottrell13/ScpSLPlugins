@@ -74,6 +74,7 @@ namespace CustomGameModes.GameModes
             player.CurrentItem = item;
             EnsureFirearm(FirearmType.Com15, AttachmentIdentifier.Get(FirearmType.Com15, InventorySystem.Items.Firearms.Attachments.AttachmentName.Flashlight));
             player.AddAmmo(FirearmType.Com15, 10);
+            player.EnableEffect(EffectType.Scp1344);
         }
 
 

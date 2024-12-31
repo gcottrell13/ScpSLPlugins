@@ -1,14 +1,13 @@
-﻿namespace WaitAndChillReborn
+﻿namespace WaitAndChillReborn.LobbyRooms;
+
+using UnityEngine;
+
+public class DrivewayRoom : BaseLobbyRoom
 {
-    using UnityEngine;
+    public const string Name = "DRIVEWAY";
 
-    public class DrivewayRoom : BaseLobbyRoom
+    public override void SetupSpawnPoints()
     {
-        public const string Name = "DRIVEWAY";
-
-        public override void SetupSpawnPoints()
-        {
-            SpawnPoints.Add(new Vector3(0f, 995f, -8f));
-        }
+        SpawnPoints.Add(new Vector3(0f, 995f, -8f));
     }
 }
