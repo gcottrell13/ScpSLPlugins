@@ -47,35 +47,25 @@ internal class GnomeoSquad
 
         int num = Player.Get(x => x.IsScp && x.Role != RoleTypeId.Scp0492).Count();
         StringBuilder sb = new();
-        if (ClutterSpawner.IsHolidayActive(Holidays.Christmas))
+
+        sb.Append("MTFUNIT EPSILON 11 DESIGNATED ");
+        sb.Append("NO ME O ");
+        sb.Append(" HASENTERED ALLREMAINING ");
+        if (num == 0)
         {
-            sb.Append("XMAS_EPSILON11 ");
-            sb.Append("NO ME O ");
-            sb.Append(" XMAS_HASENTERED ");
-            sb.Append(num);
-            sb.Append(" XMAS_SCPSUBJECTS");
+            sb.Append("NOSCPSLEFT");
         }
         else
         {
-            sb.Append("MTFUNIT EPSILON 11 DESIGNATED ");
-            sb.Append("NO ME O ");
-            sb.Append(" HASENTERED ALLREMAINING ");
-            if (num == 0)
+            sb.Append("AWAITINGRECONTAINMENT ");
+            sb.Append(num);
+            if (num == 1)
             {
-                sb.Append("NOSCPSLEFT");
+                sb.Append(" SCPSUBJECT");
             }
             else
             {
-                sb.Append("AWAITINGRECONTAINMENT ");
-                sb.Append(num);
-                if (num == 1)
-                {
-                    sb.Append(" SCPSUBJECT");
-                }
-                else
-                {
-                    sb.Append(" SCPSUBJECTS");
-                }
+                sb.Append(" SCPSUBJECTS");
             }
         }
 

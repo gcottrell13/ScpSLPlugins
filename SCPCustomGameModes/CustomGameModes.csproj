@@ -9,8 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ExMod.Exiled" Version="9.0.1" />
+    <PackageReference Include="ExMod.Exiled" Version="9.6.0" />
     <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+    <PackageReference Include="Northwood.LabAPI" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,9 +26,6 @@
     </Reference>
     <Reference Include="Mirror">
       <HintPath>$(EXILED_REFERENCES)\Mirror.dll</HintPath>
-    </Reference>
-    <Reference Include="NorthwoodLib">
-      <HintPath>$(EXILED_REFERENCES)\NorthwoodLib.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(EXILED_REFERENCES)\UnityEngine.CoreModule.dll</HintPath>

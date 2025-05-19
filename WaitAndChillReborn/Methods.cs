@@ -33,7 +33,7 @@ namespace WaitAndChillReborn
                     stringBuilder.Append("\n" + Translation.TopMessage);
                     stringBuilder.Append("\n" + Translation.BottomMessage);
 
-                    short networkTimer = GameCore.RoundStart.singleton.NetworkTimer;
+                    var networkTimer = GameCore.RoundStart.singleton?.NetworkTimer;
 
                     switch (networkTimer)
                     {

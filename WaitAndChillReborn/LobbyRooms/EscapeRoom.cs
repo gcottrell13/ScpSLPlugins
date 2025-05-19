@@ -8,6 +8,6 @@ public class EscapeRoom : BaseLobbyRoom
 
     public override void SetupSpawnPoints()
     {
-        SpawnPoints.Add(new Vector3(123f, 988f, 26f));
+        SpawnPoints.Add(new Vector3(123f, 988f - 700f, 26f));
     }
 }

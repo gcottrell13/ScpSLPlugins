@@ -3,13 +3,12 @@ using Exiled.API.Features;
 using MEC;
 using PlayerRoles;
 using SCPRandomCoin.API;
-using SCPRandomCoin.Configs;
 using System.Collections.Generic;
 
 namespace SCPRandomCoin.CoinEffects;
 
 [RandomCoinEffect(nameof(LookLikeScp))]
-public class LookLikeScp : BaseCoinEffect, ICoinEffectDefinition
+public class LookLikeScp : BaseCoinEffect, ICoinEffectDefinition, IVoiceChatListen
 {
     public bool CanHaveEffect(PlayerInfoCache playerInfoCache) =>
         Round.IsStarted && playerInfoCache.OngoingEffect == null && !playerInfoCache.IsScp;
@@ -26,6 +25,9 @@ public class LookLikeScp : BaseCoinEffect, ICoinEffectDefinition
         }.GetRandomValue();
         player.ChangeAppearance(scp);
         EffectHandler.HasOngoingEffect[player] = this;
+
+
+
         yield return Timing.WaitForSeconds(waitSeconds);
         EffectHandler.HasOngoingEffect.Remove(player);
         if (player.IsAlive)
@@ -36,5 +38,19 @@ public class LookLikeScp : BaseCoinEffect, ICoinEffectDefinition
     {
         Timing.RunCoroutine(Coroutine(playerInfoCache.Player, 60));
         hintLines.Add(translation.FeelFunny);
+    }
+
+
+    public void OnVoiceChatListen(LabApi.Events.Arguments.PlayerEvents.PlayerReceivingVoiceMessageEventArgs ev)
+    {
+        if (ev.Player.IsSCP)
+        {
+            ev.IsAllowed = true;
+            ev.Message.Channel = VoiceChat.VoiceChatChannel.ScpChat;
+        }
+        else
+        {
+            ev.IsAllowed = false;
+        }
     }
 }

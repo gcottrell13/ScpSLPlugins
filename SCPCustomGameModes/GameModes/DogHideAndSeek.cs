@@ -21,8 +21,6 @@ using Scp914;
 using PlayerRoles;
 using Exiled.API.Features.Items;
 using CustomGameModes.Configs;
-using VoiceChatModifyHook;
-using VoiceChatModifyHook.Events;
 using VoiceChat;
 
 namespace CustomGameModes.GameModes
@@ -74,7 +72,7 @@ namespace CustomGameModes.GameModes
             Scp914Handler.UpgradingPickup += UpgradePickup;
             Scp914Handler.UpgradingInventoryItem += UpgradeInventory;
 
-            ModifyVoiceChat.OnVoiceChatListen += OnVoiceChatListen;
+            LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage += OnVoiceChatListen;
             // -------------------------------------------------------------
             // -------------------------------------------------------------
 
@@ -113,7 +111,7 @@ namespace CustomGameModes.GameModes
             Scp914Handler.UpgradingPickup -= UpgradePickup;
             Scp914Handler.UpgradingInventoryItem -= UpgradeInventory;
 
-            ModifyVoiceChat.OnVoiceChatListen -= OnVoiceChatListen;
+            LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage -= OnVoiceChatListen;
             // -------------------------------------------------------------
             // -------------------------------------------------------------
 
@@ -142,23 +140,23 @@ namespace CustomGameModes.GameModes
 
         #region Event Handlers
 
-        private void OnVoiceChatListen(VoiceChatListenEvent ev)
+        private void OnVoiceChatListen(LabApi.Events.Arguments.PlayerEvents.PlayerReceivingVoiceMessageEventArgs ev)
         {
-            var speaker = ev.Speaker;
-            var listener = ev.Listener;
-            var channel = ev.VoiceChatChannel;
+            var speaker = ev.Sender;
+            var listener = ev.Player;
+            var channel = ev.Message.Channel;
             if (speaker == listener)
                 return;
             if (channel == VoiceChatChannel.Mimicry)
                 return;
 
-            if (listener.IsScp && !speaker.IsAlive)
+            if (listener.IsSCP && !speaker.IsAlive)
             {
-                ev.VoiceChatChannel = VoiceChatChannel.RoundSummary;
+                ev.Message.Channel = VoiceChatChannel.RoundSummary;
             }
-            else if (speaker.IsScp && !listener.IsAlive)
+            else if (speaker.IsSCP && !listener.IsAlive)
             {
-                ev.VoiceChatChannel = VoiceChatChannel.Spectator;
+                ev.Message.Channel = VoiceChatChannel.Spectator;
             }
         }
 

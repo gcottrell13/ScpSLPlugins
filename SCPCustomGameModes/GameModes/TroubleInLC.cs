@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using PlayerEvent = Exiled.Events.Handlers.Player;
 using ServerEvent = Exiled.Events.Handlers.Server;
 using Scp914Event = Exiled.Events.Handlers.Scp914;
-using Scp173Event = Exiled.Events.Handlers.Scp173;
 using MapEvent = Exiled.Events.Handlers.Map;
 using WarheadEvent = Exiled.Events.Handlers.Warhead;
 using System;
@@ -26,11 +25,8 @@ using Exiled.Events.EventArgs.Server;
 using Exiled.Events.EventArgs.Scp106;
 using SCPStore.API;
 using SCPStore;
-using PluginAPI.Roles;
 using Exiled.API.Features.Roles;
-using VoiceChatModifyHook;
 using VoiceChat;
-using VoiceChatModifyHook.Events;
 
 namespace CustomGameModes.GameModes;
 
@@ -153,7 +149,7 @@ internal class TroubleInLC : IGameMode
         PlayerEvent.UsedItem += OnUseItem;
         PlayerEvent.UsingItem += OnUsingItem;
 
-        ModifyVoiceChat.OnVoiceChatListen += OnVoiceChatListen;
+        LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage += OnVoiceChatListen;
 
         Scp914Event.UpgradingPlayer += OnUpgradingPlayer;
 
@@ -180,7 +176,7 @@ internal class TroubleInLC : IGameMode
         PlayerEvent.UsedItem -= OnUseItem;
         PlayerEvent.UsingItem -= OnUsingItem;
 
-        ModifyVoiceChat.OnVoiceChatListen -= OnVoiceChatListen;
+        LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage += OnVoiceChatListen;
 
         Scp914Event.UpgradingPlayer -= OnUpgradingPlayer;
 
@@ -423,11 +419,11 @@ internal class TroubleInLC : IGameMode
 
     public int GetCredits(Player player) => bank.GetCredits(player, StoreCurrency);
 
-    private void OnVoiceChatListen(VoiceChatListenEvent ev)
+    private void OnVoiceChatListen(LabApi.Events.Arguments.PlayerEvents.PlayerReceivingVoiceMessageEventArgs ev)
     {
-        var speaker = ev.Speaker;
-        var listener = ev.Listener;
-        var channel = ev.VoiceChatChannel;
+        var speaker = ev.Sender;
+        var listener = ev.Player;
+        var channel = ev.Message.Channel;
         if (speaker == listener)
             return;
         if (channel == VoiceChatChannel.Mimicry)
@@ -435,11 +431,11 @@ internal class TroubleInLC : IGameMode
 
         if (traitors.Contains(listener) && !speaker.IsAlive)
         {
-            ev.VoiceChatChannel = VoiceChatChannel.RoundSummary;
+            ev.Message.Channel = VoiceChatChannel.RoundSummary;
         }
         else if (traitors.Contains(speaker) && !listener.IsAlive)
         {
-            ev.VoiceChatChannel = VoiceChatChannel.RoundSummary;
+            ev.Message.Channel = VoiceChatChannel.RoundSummary;
         }
     }
 

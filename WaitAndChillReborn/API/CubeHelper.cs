@@ -23,8 +23,6 @@ namespace WaitAndChillReborn
             {
                 Timing.KillCoroutines(cubeEffect);
             }
-
-            
         }
 
         public Primitive CreateCube(Vector3 cubePosition)

@@ -1,49 +1,41 @@
-﻿using Exiled.Events.Commands.Reload;
+﻿namespace CustomGameModes;
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Exiled.API.Features;
+using HarmonyLib;
+using Configs;
+using Config = global::CustomGameModes.Configs.Config;
 
-namespace CustomGameModes
+internal class CustomGameModes : Plugin<Config, Translation>
 {
-    using System;
-    using Exiled.API.Features;
-    using HarmonyLib;
-    using Configs;
-    using Config = global::CustomGameModes.Configs.Config;
+    public static CustomGameModes? Singleton;
+    private Harmony? _harmony;
 
-    internal class CustomGameModes : Plugin<Config, Translation>
+    EventHandlers? handlers;
+
+    public override void OnEnabled()
     {
-        public static CustomGameModes? Singleton;
-        private Harmony? _harmony;
+        Singleton = this;
+        handlers = new EventHandlers();
+        handlers.RegisterEvents();
 
-        EventHandlers? handlers;
+        _harmony = new Harmony($"gcottre-cgm-{DateTime.Now.Ticks}");
+        _harmony.PatchAll();
 
-        public override void OnEnabled()
-        {
-            Singleton = this;
-            handlers = new EventHandlers();
-            handlers.RegisterEvents();
-
-            _harmony = new Harmony($"gcottre-cgm-{DateTime.Now.Ticks}");
-            _harmony.PatchAll();
-
-            base.OnEnabled();
-        }
-
-        public override void OnDisabled()
-        {
-            Singleton = null;
-            handlers?.UnregisterEvents();
-            _harmony?.UnpatchAll();
-            base.OnDisabled();
-        }
-
-
-        public override string Name => "CustomGameModes";
-        public override string Author => "GCOTTRE";
-        public override Version Version => new Version(1, 0, 5);
-        public override Version RequiredExiledVersion => new Version(9, 0, 0);
+        base.OnEnabled();
     }
+
+    public override void OnDisabled()
+    {
+        Singleton = null;
+        handlers?.UnregisterEvents();
+        _harmony?.UnpatchAll();
+        base.OnDisabled();
+    }
+
+
+    public override string Name => "CustomGameModes";
+    public override string Author => "GCOTTRE";
+    public override Version Version => new Version(1, 0, 6);
+    public override Version RequiredExiledVersion => new Version(9, 6, 0);
 }

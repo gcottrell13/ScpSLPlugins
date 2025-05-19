@@ -10,11 +10,12 @@ using static API.API;
 using Log = Exiled.API.Features.Log;
 using Object = UnityEngine.Object;
 using Player = Exiled.API.Features.Player;
-using Exiled.API.Features;
 using Exiled.API.Features.Roles;
 using System.Collections.Generic;
 using System.Linq;
 using global::WaitAndChillReborn.LobbyRooms;
+using CommandSystem.Commands.RemoteAdmin;
+using Exiled.API.Features;
 
 internal static class EventHandlers
 {
@@ -40,39 +41,53 @@ internal static class EventHandlers
 
     public static void OnRoundPrepare()
     {
+        //var a = LabApi.Features.Wrappers.InteractableToy.Create(networkSpawn: false);
+        //NetworkServer.connections.Values.ToList().ForEach(c => a.Base.netIdentity.Add);
+        
+        PlayerEventHandlers.STARTING_ROUND = true;
         foreach (BaseLobbyRoom room in LobbyAvailableRooms)
             room.OnRoundPrepare();
+    }
+
+    private static void OnWaitSetupServer()
+    {
+        Reset();
+        Log.Debug("WaitAndChillReborn.Singleton.Config.DisplayWaitingForPlayersScreen");
+        if (!WaitAndChillReborn.Singleton.Config.DisplayWaitingForPlayersScreen)
+            GameObject.Find("StartRound").transform.localScale = Vector3.zero;
+
+        Log.Debug("LobbyTimer.IsRunning");
+        if (LobbyTimer.IsRunning)
+            Timing.KillCoroutines(LobbyTimer);
+
+        Log.Debug("ReadyCheckHandle.IsRunning");
+        if (ReadyCheckHandle.IsRunning)
+            Timing.KillCoroutines(ReadyCheckHandle);
+
+        Log.Debug("Server.FriendlyFire");
+        if (Server.FriendlyFire)
+            new FriendlyFireDetectorCommand().Execute(new(["friendlyfiredetector", "pause"]), null, out var _);
+
+        Log.Debug("WaitAndChillReborn.Singleton.Config.DisplayWaitMessage");
+        if (WaitAndChillReborn.Singleton.Config.DisplayWaitMessage)
+            LobbyTimer = Timing.RunCoroutine(Methods.LobbyTimer());
+
+        Log.Debug("Config.UseReadyCheck");
+        if (Config.UseReadyCheck)
+            ReadyCheckHandle = Timing.RunCoroutine(ReadyCheck());
+
+        Log.Debug("Clear turned players");
+        Scp173Role.TurnedPlayers.Clear();
+        Scp096Role.TurnedPlayers.Clear();
+
+        Log.Debug("Server.FriendlyFire");
+        Methods.SetupSpawnPoints();
     }
 
     public static void OnWaitingForPlayers()
     {
         Log.Warn("Waiting players");
-        Reset();
-
-        if (!WaitAndChillReborn.Singleton.Config.DisplayWaitingForPlayersScreen)
-            GameObject.Find("StartRound").transform.localScale = Vector3.zero;
-
-        if (LobbyTimer.IsRunning)
-            Timing.KillCoroutines(LobbyTimer);
-
-        if (ReadyCheckHandle.IsRunning)
-            Timing.KillCoroutines(ReadyCheckHandle);
-
-        if (Server.FriendlyFire)
-            Log.Info(Server.ExecuteCommand("/friendlyfiredetector pause"));
-
-        if (WaitAndChillReborn.Singleton.Config.DisplayWaitMessage)
-            LobbyTimer = Timing.RunCoroutine(Methods.LobbyTimer());
-
-        if (Config.UseReadyCheck)
-            ReadyCheckHandle = Timing.RunCoroutine(ReadyCheck());
-
-        Log.Warn("Clear turned players");
-        Scp173Role.TurnedPlayers.Clear();
-        Scp096Role.TurnedPlayers.Clear();
-
-        Methods.SetupSpawnPoints();
-
+        OnWaitSetupServer();
         Timing.CallDelayed(
             1f,
             () =>
@@ -107,9 +122,9 @@ internal static class EventHandlers
     public static void OnRoundStarted()
     {
         Log.Info("Round started");
-        foreach (ThrownProjectile throwable in Object.FindObjectsOfType<ThrownProjectile>())
+        foreach (ThrownProjectile throwable in Object.FindObjectsByType<ThrownProjectile>(FindObjectsSortMode.None))
         {
-            if (throwable.TryGetComponent(out Rigidbody rb) && rb.velocity.sqrMagnitude <= 1f)
+            if (throwable.TryGetComponent(out Rigidbody rb) && rb.linearVelocity.sqrMagnitude <= 1f)
                 continue;
 
             throwable.transform.position = Vector3.zero;
@@ -124,7 +139,7 @@ internal static class EventHandlers
         }
 
         if (Server.FriendlyFire)
-            Log.Info(Server.ExecuteCommand("/friendlyfiredetector unpause"));
+            new FriendlyFireDetectorCommand().Execute(new(["friendlyfiredetector", "unpause"]), null, out var _);
 
         if (LobbyTimer.IsRunning)
             Timing.KillCoroutines(LobbyTimer);
@@ -186,8 +201,8 @@ internal static class EventHandlers
 
             if (numPlayers > 0)
             {
-                List<Player> ready = ReadyPlayers.Intersect(validPlayers).ToList();
-                IsReadyToStartGame = Config.ReadyCheckPercent <= ready.Count * 100 / numPlayers;
+                List<Player> ready = [.. ReadyPlayers.Intersect(validPlayers)];
+                IsReadyToStartGame = Config.ReadyCheckPercent <= (ready.Count * 100 / numPlayers);
                 Round.IsLobbyLocked = !IsReadyToStartGame;
             }
 

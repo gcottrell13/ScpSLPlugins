@@ -1,8 +1,7 @@
 ﻿using Exiled.API.Features;
-using Exiled.Events.EventArgs.Map;
 using Exiled.Events.EventArgs.Player;
-using Exiled.Events.EventArgs.Warhead;
 using MEC;
+using SCPRandomCoin.API;
 using System.Collections.Generic;
 
 namespace SCPRandomCoin;
@@ -36,5 +35,13 @@ internal static class EventHandlers
     {
         EffectHandler.Reset();
         EffectHandler.SpawnExtraCoins();
+    }
+
+    public static void OnVoiceChatListen(LabApi.Events.Arguments.PlayerEvents.PlayerReceivingVoiceMessageEventArgs ev)
+    {
+        if (EffectHandler.HasOngoingEffect.TryGetValue(ev.Sender, out var effect) && effect is IVoiceChatListen vc)
+        {
+            vc.OnVoiceChatListen(ev);
+        }
     }
 }

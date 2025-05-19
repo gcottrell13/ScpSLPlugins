@@ -101,6 +101,6 @@ public class WaitAndChillReborn : Plugin<Config, Translation>
 
     public override string Name => "WaitAndChillReborn";
     public override string Author => "GCOTTRE";
-    public override Version Version => new Version(1, 0, 2);
-    public override Version RequiredExiledVersion => new Version(9, 0, 0);
+    public override Version Version => new Version(1, 0, 3);
+    public override Version RequiredExiledVersion => new Version(9, 6, 0);
 }

@@ -8,6 +8,7 @@ using PlayerEvent = Exiled.Events.Handlers.Player;
 using ServerEvent = Exiled.Events.Handlers.Server;
 using global::SCPRandomCoin.API;
 using global::SCPRandomCoin.CoinEffects;
+using System.Linq;
 
 internal class SCPRandomCoin : Plugin<Config, Translation>
 {
@@ -16,11 +17,14 @@ internal class SCPRandomCoin : Plugin<Config, Translation>
     public override void OnEnabled()
     {
         Singleton = this;
+        RegisterAll();
+
         PlayerEvent.FlippingCoin += EventHandlers.OnCoinFlip;
         PlayerEvent.ChangedItem += EventHandlers.OnChangedItem;
         ServerEvent.RoundStarted += EventHandlers.OnRoundStarted;
 
-        RegisterAll();
+        if (CoinEffectRegistry.GetEffectDefinitions().Values.Any(x => x is IVoiceChatListen))
+            LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage += EventHandlers.OnVoiceChatListen;
 
         base.OnEnabled();
     }
@@ -31,6 +35,9 @@ internal class SCPRandomCoin : Plugin<Config, Translation>
         PlayerEvent.FlippingCoin -= EventHandlers.OnCoinFlip;
         PlayerEvent.ChangedItem -= EventHandlers.OnChangedItem;
         ServerEvent.RoundStarted -= EventHandlers.OnRoundStarted;
+
+        LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage -= EventHandlers.OnVoiceChatListen;
+
         base.OnDisabled();
     }
 
@@ -70,5 +77,5 @@ internal class SCPRandomCoin : Plugin<Config, Translation>
     public override string Name => "RandomCoin";
     public override string Author => "GCOTTRE";
     public override Version Version => new Version(1, 0, 1);
-    public override Version RequiredExiledVersion => new Version(8, 13, 1);
+    public override Version RequiredExiledVersion => new Version(9, 6, 0);
 }

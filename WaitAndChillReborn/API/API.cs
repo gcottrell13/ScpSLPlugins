@@ -65,6 +65,7 @@
             Round.KillsByScp = 0;
             spawnedRagdollsFor3114 = 0;
             _roles = null;
+            PlayerEventHandlers.STARTING_ROUND = false;
         }
 
         public static Translation Translation => WaitAndChillReborn.Singleton.Translation;

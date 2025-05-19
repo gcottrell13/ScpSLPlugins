@@ -18,9 +18,6 @@ using Exiled.Events.EventArgs.Interfaces;
 using Exiled.Events.EventArgs.Scp096;
 using System.Linq;
 using CustomGameModes.API;
-using VoiceChat;
-using VoiceChatModifyHook.Events;
-using VoiceChatModifyHook;
 
 namespace CustomGameModes.GameModes.Normal;
 
@@ -44,9 +41,12 @@ internal class SCP5000Handler
     DateTime LastNoisyAction;
 
     // time between ticks for checking visibility
-    public float TickRateSeconds = 1f;
+    public float TickRateSeconds = 0.5f;
 
-    public Dictionary<Player, int> VisibleTo = new();
+    /// <summary>
+    /// dictionary of players that can see this SCP 5000 owner. Value is the number of seconds they have NOT had a line of sight to the owner.
+    /// </summary>
+    public Dictionary<Player, float> VisibleTo = new();
 
     public SCP5000Handler(Player owner)
     {
@@ -86,7 +86,7 @@ internal class SCP5000Handler
         PlayerEvent.StoppingGenerator -= IsNoisy;
         PlayerEvent.InteractingLocker -= IsNoisy;
 
-        ModifyVoiceChat.OnVoiceChatListen -= OnVoiceChatListen;
+        LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage -= OnVoiceChatListen;
 
         Scp914Event.Activating -= IsNoisy;
         Scp914Event.ChangingKnobSetting -= IsNoisy;
@@ -130,7 +130,7 @@ internal class SCP5000Handler
         PlayerEvent.StoppingGenerator += IsNoisy;
         PlayerEvent.InteractingLocker += IsNoisy;
 
-        ModifyVoiceChat.OnVoiceChatListen += OnVoiceChatListen;
+        LabApi.Events.Handlers.PlayerEvents.ReceivingVoiceMessage += OnVoiceChatListen;
 
         Scp914Event.Activating += IsNoisy;
         Scp914Event.ChangingKnobSetting += IsNoisy;
@@ -207,16 +207,16 @@ internal class SCP5000Handler
         }
     }
 
-    private void OnVoiceChatListen(VoiceChatListenEvent ev)
+    private void OnVoiceChatListen(LabApi.Events.Arguments.PlayerEvents.PlayerReceivingVoiceMessageEventArgs ev)
     {
-        if (ev.Speaker != Scp5000Owner) return;
+        if (ev.Sender != Scp5000Owner) return;
 
-        var speaker = ev.Speaker;
-        var listener = ev.Listener;
+        var speaker = ev.Sender;
+        var listener = ev.Player;
         if (speaker == listener)
             return;
         if (VisibleTo.ContainsKey(listener) == false)
-            ev.VoiceChatChannel = VoiceChatChannel.None;
+            ev.IsAllowed = false;
     }
 
     void IsNoisy(IPlayerEvent ev)
@@ -258,6 +258,7 @@ internal class SCP5000Handler
         {
             if (!VisibleTo.ContainsKey(player))
             {
+                Log.Debug($"{Scp5000Owner.DisplayNickname} - now visible to {player.DisplayNickname}");
                 Scp5000Owner.ChangeAppearance(Scp5000OwnerRole, true);
             }
             VisibleTo[player] = 0;
@@ -304,15 +305,21 @@ internal class SCP5000Handler
 
     private IEnumerator<float> scp5000Loop()
     {
-        var requirement = Round.ElapsedTime.Minutes / 5 + 1;
+        var lastTick = DateTime.Now;
         while (Scp5000Owner != null && Scp5000Owner.IsConnected && Scp5000Owner.Role.Type == Scp5000OwnerRole)
         {
             yield return Timing.WaitForSeconds(TickRateSeconds);
             if (WasRecentlyNoisy)
                 continue;
 
+            var delta = (DateTime.Now - lastTick).TotalSeconds;
+            lastTick = DateTime.Now;
+            var losAbsenceRequirement = Round.ElapsedTime.Minutes / 5 + 1;
+
             foreach (var player in Player.List)
             {
+                if (player == Scp5000Owner) continue;
+
                 if (!canPlayerBeAffected(player))
                 {
                     if (!VisibleTo.ContainsKey(player))
@@ -323,7 +330,7 @@ internal class SCP5000Handler
                     continue;
                 }
 
-                if (!VisibleTo.TryGetValue(player, out var ticksNotSeen))
+                if (!VisibleTo.TryGetValue(player, out var secondsNotSeen))
                 {
                     // Scp5000Owner.ChangeAppearance(RoleTypeId.Spectator, new[] { player }, true);
                     continue;
@@ -331,18 +338,21 @@ internal class SCP5000Handler
 
                 if (player.GetVisionInformation(Scp5000Owner).IsLooking)
                 {
-                    ticksNotSeen = 0;
+                    if (secondsNotSeen != 0)
+                        Log.Debug($"Resetting {Scp5000Owner.DisplayNickname} - {player.DisplayNickname} secondsNotSeen to 0");
+                    secondsNotSeen = 0;
                 }
                 else
                 {
-                    ticksNotSeen++;
+                    secondsNotSeen += (float)delta;
                 }
-                VisibleTo[player] = ticksNotSeen;
-                if (ticksNotSeen >= requirement)
+
+                VisibleTo[player] = secondsNotSeen;
+                if (secondsNotSeen >= losAbsenceRequirement)
                 {
                     Scp5000Owner.ChangeAppearance(RoleTypeId.Spectator, new[] { player }, true);
                     VisibleTo.Remove(player);
-                    Log.Debug($"{Scp5000Owner.DisplayNickname} - now invisible to {player.DisplayNickname}");
+                    Log.Debug($"{secondsNotSeen} > {losAbsenceRequirement}: {Scp5000Owner.DisplayNickname} - now invisible to {player.DisplayNickname}");
                 }
             }
 

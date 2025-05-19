@@ -8,6 +8,6 @@ public class DrivewayRoom : BaseLobbyRoom
 
     public override void SetupSpawnPoints()
     {
-        SpawnPoints.Add(new Vector3(0f, 995f, -8f));
+        SpawnPoints.Add(new Vector3(0f, 995f - 700f, -8f));
     }
 }

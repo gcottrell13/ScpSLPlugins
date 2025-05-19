@@ -8,7 +8,6 @@
     using Exiled.API.Features;
     using Exiled.API.Features.Roles;
     using Exiled.Events.EventArgs.Player;
-    using GameCore;
     using global::WaitAndChillReborn.API;
     using MEC;
     using PlayerRoles;
@@ -16,6 +15,9 @@
 
     internal static class PlayerEventHandlers
     {
+
+        public static bool STARTING_ROUND = false;
+
         const string Ready = "<color=#32CD32>Ready</color>";
         const string readyString = @"( - )?<color=#32CD32>Ready</color>";
         static readonly Regex nameRegex = new(readyString, RegexOptions.IgnoreCase);
@@ -102,7 +104,7 @@
             if (!IsLobby)
                 return;
 
-            if (RoundStart.singleton.NetworkTimer > 1 || RoundStart.singleton.NetworkTimer == -2)
+            if (!STARTING_ROUND)
             {
                 Timing.CallDelayed(
                     Config.SpawnDelay,
@@ -124,7 +126,7 @@
             if (!IsLobby)
                 return;
 
-            if (RoundStart.singleton.NetworkTimer <= 1 && RoundStart.singleton.NetworkTimer != -2)
+            if (STARTING_ROUND)
                 return;
 
             if (LobbyAvailableRooms.Count == 0)
@@ -150,7 +152,7 @@
 
         public static void OnDied(DiedEventArgs ev)
         {
-            if (!IsLobby || (RoundStart.singleton.NetworkTimer <= 1 && RoundStart.singleton.NetworkTimer != -2))
+            if (!IsLobby || STARTING_ROUND)
                 return;
 
             if (LobbyAvailableRooms.Count == 0)
